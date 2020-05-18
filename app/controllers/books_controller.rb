@@ -1,4 +1,6 @@
 class BooksController < ApplicationController
+    before_action :authenticate_user!
+  # before_action :baria_user, only: [:edit]
 
   def show
   	@book = Book.find(params[:id])
@@ -8,7 +10,8 @@ class BooksController < ApplicationController
 
   def index
   	@books = Book.all #一覧表示するためにBookモデルの情報を全てくださいのall
-    @book.user = current_user
+    @user = current_user
+    @book = Book.new
   end
 
   def create
@@ -18,6 +21,7 @@ class BooksController < ApplicationController
   		redirect_to @book, notice: "successfully created book!"#保存された場合の移動先を指定。
   	else
   		@books = Book.all
+      @user = current_user
   		render 'index'
   	end
   end
@@ -25,8 +29,6 @@ class BooksController < ApplicationController
   def edit
   	@book = Book.find(params[:id])
   end
-
-
 
   def update
   	@book = Book.find(params[:id])
@@ -37,9 +39,9 @@ class BooksController < ApplicationController
   	end
   end
 
-  def delete
+  def destroy
   	@book = Book.find(params[:id])
-  	@book.destoy
+  	@book.destroy
   	redirect_to books_path, notice: "successfully delete book!"
   end
 
@@ -48,5 +50,11 @@ class BooksController < ApplicationController
   def book_params
   	params.require(:book).permit(:title, :body, :user_id)
   end
+
+  # def baria_user
+  #   unless params[:id].to_i == current_user.id
+  #     redirect_to books_path
+  #   end
+  #  end
 
 end
