@@ -1,6 +1,6 @@
 class BooksController < ApplicationController
-    before_action :authenticate_user!
-  # before_action :baria_user, only: [:edit]
+  before_action :authenticate_user!
+  before_action :baria_user, only: [:edit]
 
   def show
   	@book = Book.find(params[:id])
@@ -51,10 +51,11 @@ class BooksController < ApplicationController
   	params.require(:book).permit(:title, :body, :user_id)
   end
 
-  # def baria_user
-  #   unless params[:id].to_i == current_user.id
-  #     redirect_to books_path
-  #   end
-  #  end
+  def baria_user
+    book = Book.find(params[:id])
+    unless book.user == current_user
+      redirect_to books_path
+    end
+   end
 
 end
